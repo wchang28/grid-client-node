@@ -1,6 +1,6 @@
 {
   "name": "grid-client-node",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Grid Client for Node",
   "main": "./js/index.js",
   "typings": "./js/index.d.ts",
@@ -22,6 +22,6 @@
     "grid-client-core": "git+https://github.com/wchang28/grid-client-core.git",
     "oauth2": "git+https://github.com/wchang28/oauth2.git",
     "oauth2-token-grant": "git+https://github.com/wchang28/oauth2-token-grant.git",
-	"rest-node": "git+https://github.com/wchang28/rest-node.git"
+    "rest-node": "git+https://github.com/wchang28/rest-node.git"
   }
 }
