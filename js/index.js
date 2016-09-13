@@ -25,16 +25,16 @@ var GridClient = (function () {
         this.tokenGrant = null;
         this.tokenGrant = new oauth2_token_grant_1.TokenGrant(config.oauth2Options.tokenGrantOptions, config.oauth2Options.clientAppSettings);
     }
+    GridClient.prototype.getSession = function (access) {
+        return new GridSession(access, this.tokenGrant);
+    };
     GridClient.prototype.login = function (username, password, done) {
         var _this = this;
         this.tokenGrant.getAccessTokenFromPassword(username, password, function (err, access) {
-            if (err) {
+            if (err)
                 done(err, null);
-            }
-            else {
-                var session = new GridSession(access, _this.tokenGrant);
-                done(null, session);
-            }
+            else
+                done(null, _this.getSession(access));
         });
     };
     return GridClient;

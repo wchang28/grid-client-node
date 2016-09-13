@@ -22,14 +22,15 @@ export class GridClient {
     constructor(config: IGridClientConfig) {
         this.tokenGrant = new OAuth2TokenGrant(config.oauth2Options.tokenGrantOptions, config.oauth2Options.clientAppSettings);
     }
+    getSession(access: OAuth2Access) : ISession {
+        return new GridSession(access, this.tokenGrant);
+    }
     login(username: string, password: string, done:(err:any, session: ISession) => void) {
         this.tokenGrant.getAccessTokenFromPassword(username, password, (err, access: OAuth2Access) => {
-            if (err) {
+            if (err)
                 done(err, null);
-            } else {
-                let session = new GridSession(access, this.tokenGrant);
-                done(null, session);
-            }
+            else
+                done(null, this.getSession(access));
         });
     }
 }
