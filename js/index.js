@@ -24,19 +24,25 @@ var GridSession = (function (_super) {
 var GridClient = (function () {
     function GridClient(config) {
         this.tokenGrant = null;
-        this.tokenGrant = new oauth2_token_grant_1.TokenGrant(config.oauth2Options.tokenGrantOptions, config.oauth2Options.clientAppSettings);
+        if (config && config.oauth2Options && config.oauth2Options.tokenGrantOptions && config.oauth2Options.clientAppSettings)
+            this.tokenGrant = new oauth2_token_grant_1.TokenGrant(config.oauth2Options.tokenGrantOptions, config.oauth2Options.clientAppSettings);
     }
     GridClient.prototype.getSession = function (access) {
         return new GridSession(access, this.tokenGrant);
     };
     GridClient.prototype.login = function (username, password, done) {
         var _this = this;
-        this.tokenGrant.getAccessTokenFromPassword(username, password, function (err, access) {
-            if (err)
-                done(err, null);
-            else
-                done(null, _this.getSession(access));
-        });
+        if (this.tokenGrant) {
+            this.tokenGrant.getAccessTokenFromPassword(username, password, function (err, access) {
+                if (err)
+                    done(err, null);
+                else
+                    done(null, _this.getSession(access));
+            });
+        }
+        else {
+            done({ error: "token_grant_invalid", error_description: "token grant not initialized" }, null);
+        }
     };
     return GridClient;
 }());

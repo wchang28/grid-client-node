@@ -5,7 +5,7 @@ export interface IGridClientConfig {
 }
 export declare class GridClient {
     private tokenGrant;
-    constructor(config: IGridClientConfig);
+    constructor(config?: IGridClientConfig);
     getSession(access: OAuth2Access): ISession;
     login(username: string, password: string, done: (err: any, session: ISession) => void): void;
 }

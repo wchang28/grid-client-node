@@ -19,19 +19,24 @@ export interface IGridClientConfig {
 
 export class GridClient {
     private tokenGrant: IOAuth2TokenGrant = null;
-    constructor(config: IGridClientConfig) {
-        this.tokenGrant = new OAuth2TokenGrant(config.oauth2Options.tokenGrantOptions, config.oauth2Options.clientAppSettings);
+    constructor(config?: IGridClientConfig) {
+        if (config && config.oauth2Options && config.oauth2Options.tokenGrantOptions && config.oauth2Options.clientAppSettings)
+            this.tokenGrant = new OAuth2TokenGrant(config.oauth2Options.tokenGrantOptions, config.oauth2Options.clientAppSettings);
     }
     getSession(access: OAuth2Access) : ISession {
         return new GridSession(access, this.tokenGrant);
     }
     login(username: string, password: string, done:(err:any, session: ISession) => void) {
-        this.tokenGrant.getAccessTokenFromPassword(username, password, (err, access: OAuth2Access) => {
-            if (err)
-                done(err, null);
-            else
-                done(null, this.getSession(access));
-        });
+        if (this.tokenGrant) {
+            this.tokenGrant.getAccessTokenFromPassword(username, password, (err, access: OAuth2Access) => {
+                if (err)
+                    done(err, null);
+                else
+                    done(null, this.getSession(access));
+            });
+        } else {
+            done({error: "token_grant_invalid", error_description: "token grant not initialized"}, null);
+        }
     }
 }
 
