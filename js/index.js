@@ -7,17 +7,17 @@ var __extends = (this && this.__extends) || function (d, b) {
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-var $node = require('rest-node');
-var grid_client_core_1 = require('grid-client-core');
-var oauth2_token_grant_1 = require('oauth2-token-grant');
+var $node = require("rest-node");
+var grid_client_core_1 = require("grid-client-core");
+var oauth2_token_grant_1 = require("oauth2-token-grant");
 var GridSession = (function (_super) {
     __extends(GridSession, _super);
     function GridSession(access, tokenGrant) {
-        _super.call(this, $node.get(), access, tokenGrant);
+        return _super.call(this, $node.get(), access, tokenGrant) || this;
     }
-    GridSession.prototype.logout = function (done) {
+    GridSession.prototype.logout = function () {
         var path = "/logout";
-        this.$J("GET", path, {}, (typeof done === 'function' ? done : function (err, ret) { }));
+        return this.$J("GET", path, {});
     };
     return GridSession;
 }(grid_client_core_1.SessionBase));
@@ -47,4 +47,4 @@ var GridClient = (function () {
     return GridClient;
 }());
 exports.GridClient = GridClient;
-__export(require('grid-client-core'));
+__export(require("grid-client-core"));

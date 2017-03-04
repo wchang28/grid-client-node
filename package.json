@@ -19,6 +19,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@types/es6-promise": "0.0.32",
     "@types/node": "^6.0.41",
     "grid-client-core": "git+https://github.com/wchang28/grid-client-core.git",
     "oauth2": "git+https://github.com/wchang28/oauth2.git",

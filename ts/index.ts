@@ -7,9 +7,9 @@ class GridSession extends SessionBase implements ISession {
     constructor(access: OAuth2Access, tokenGrant: IOAuth2TokenGrant) {
         super($node.get(), access, tokenGrant);
     }
-    logout(done?:(err:any) => void) : void {
+    logout() : Promise<any> {
         let path = "/logout";
-        this.$J("GET", path, {}, (typeof done=== 'function' ? done : (err:any, ret: any) => {}));
+        return this.$J("GET", path, {});
     }
 }
 
