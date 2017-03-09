@@ -26,17 +26,20 @@ export class GridClient {
     getSession(access: OAuth2Access) : ISession {
         return new GridSession(access, this.tokenGrant);
     }
-    login(username: string, password: string, done:(err:any, session: ISession) => void) {
-        if (this.tokenGrant) {
-            this.tokenGrant.getAccessTokenFromPassword(username, password, (err, access: OAuth2Access) => {
-                if (err)
-                    done(err, null);
-                else
-                    done(null, this.getSession(access));
-            });
-        } else {
-            done({error: "token_grant_invalid", error_description: "token grant not initialized"}, null);
-        }
+
+    login(username: string, password: string) : Promise<ISession> {
+        return new Promise<ISession>((resolve: (value: ISession) => void, reject: (err: any) => void) => {
+            if (this.tokenGrant) {
+                this.tokenGrant.getAccessTokenFromPassword(username, password, (err, access: OAuth2Access) => {
+                    if (err)
+                        reject(err);
+                    else
+                        resolve(this.getSession(access));
+                });
+            } else {
+                reject({error: "token_grant_invalid", error_description: "token grant not initialized"});
+            }
+        });
     }
 }
 
