@@ -1,4 +1,3 @@
-/// <reference types="es6-promise" />
 import { ISession, OAuth2Access } from 'grid-client-core';
 import * as oauth2 from 'oauth2';
 export interface IGridClientConfig {
