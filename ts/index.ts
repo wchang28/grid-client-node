@@ -1,10 +1,10 @@
 import * as $node from 'rest-node';
-import {ISession, SessionBase, OAuth2Access, IOAuth2TokenGrant} from 'grid-client-core';
+import {ISession, SessionBase, OAuth2Access} from 'grid-client-core';
 import * as oauth2 from 'oauth2';
 import {TokenGrant as OAuth2TokenGrant} from 'oauth2-token-grant';
 
 class GridSession extends SessionBase implements ISession {
-    constructor(access: OAuth2Access, tokenGrant: IOAuth2TokenGrant) {
+    constructor(access: OAuth2Access, tokenGrant: oauth2.ITokenGrant) {
         super($node.get(), access, tokenGrant);
     }
     logout() : Promise<any> {
@@ -18,7 +18,7 @@ export interface IGridClientConfig {
 }
 
 export class GridClient {
-    private tokenGrant: IOAuth2TokenGrant = null;
+    private tokenGrant: oauth2.ITokenGrant = null;
     constructor(config?: IGridClientConfig) {
         if (config && config.oauth2Options && config.oauth2Options.tokenGrantOptions && config.oauth2Options.clientAppSettings)
             this.tokenGrant = new OAuth2TokenGrant(config.oauth2Options.tokenGrantOptions, config.oauth2Options.clientAppSettings);
@@ -30,11 +30,11 @@ export class GridClient {
     login(username: string, password: string) : Promise<ISession> {
         return new Promise<ISession>((resolve: (value: ISession) => void, reject: (err: any) => void) => {
             if (this.tokenGrant) {
-                this.tokenGrant.getAccessTokenFromPassword(username, password, (err, access: OAuth2Access) => {
-                    if (err)
-                        reject(err);
-                    else
-                        resolve(this.getSession(access));
+                this.tokenGrant.getAccessTokenFromPassword(username, password)
+                .then((access: OAuth2Access) => {
+                    resolve(this.getSession(access));
+                }).catch((err: any) => {
+                    reject(err);
                 });
             } else {
                 reject({error: "token_grant_invalid", error_description: "token grant not initialized"});

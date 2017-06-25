@@ -40,11 +40,11 @@ var GridClient = (function () {
         var _this = this;
         return new Promise(function (resolve, reject) {
             if (_this.tokenGrant) {
-                _this.tokenGrant.getAccessTokenFromPassword(username, password, function (err, access) {
-                    if (err)
-                        reject(err);
-                    else
-                        resolve(_this.getSession(access));
+                _this.tokenGrant.getAccessTokenFromPassword(username, password)
+                    .then(function (access) {
+                    resolve(_this.getSession(access));
+                }).catch(function (err) {
+                    reject(err);
                 });
             }
             else {
