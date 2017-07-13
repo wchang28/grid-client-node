@@ -18,8 +18,8 @@ var grid_client_core_1 = require("grid-client-core");
 var oauth2_token_grant_1 = require("oauth2-token-grant");
 var GridSession = (function (_super) {
     __extends(GridSession, _super);
-    function GridSession(access, tokenGrant) {
-        return _super.call(this, $node.get(), access, tokenGrant) || this;
+    function GridSession(access) {
+        return _super.call(this, $node.get(), access) || this;
     }
     GridSession.prototype.logout = function () {
         var path = "/logout";
@@ -33,24 +33,13 @@ var GridClient = (function () {
         if (config && config.oauth2Options && config.oauth2Options.tokenGrantOptions && config.oauth2Options.clientAppSettings)
             this.tokenGrant = new oauth2_token_grant_1.TokenGrant(config.oauth2Options.tokenGrantOptions, config.oauth2Options.clientAppSettings);
     }
-    GridClient.prototype.getSession = function (access) {
-        return new GridSession(access, this.tokenGrant);
-    };
+    GridClient.prototype.getSession = function (access) { return new GridSession(access); };
     GridClient.prototype.login = function (username, password) {
         var _this = this;
-        return new Promise(function (resolve, reject) {
-            if (_this.tokenGrant) {
-                _this.tokenGrant.getAccessTokenFromPassword(username, password)
-                    .then(function (access) {
-                    resolve(_this.getSession(access));
-                }).catch(function (err) {
-                    reject(err);
-                });
-            }
-            else {
-                reject({ error: "token_grant_invalid", error_description: "token grant not initialized" });
-            }
-        });
+        if (this.tokenGrant)
+            return this.tokenGrant.getAccessTokenFromPassword(username, password).then(function (access) { return _this.getSession(access); });
+        else
+            return Promise.reject({ error: "token_grant_invalid", error_description: "token grant not initialized" });
     };
     return GridClient;
 }());
